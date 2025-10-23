@@ -17,19 +17,22 @@
 # Adjuntos → rutas a archivos o URLs relacionadas.
 # Recordatorios → fecha/hora para avisar.
 
+import time
 from crud import create, read, update, delete
 from InquirerPy import inquirer
+from rich.console import Console # python -m pip install rich
+console = Console()
 
 def main():
     while True:
         action = inquirer.select(
             message = "¿Qué acción quiere realizar?: ",
             choices = [
-                {"name": "Finalizar", "value": 0},
                 {"name": "Crear tarea", "value": 1},
                 {"name": "Mostrar tareas", "value": 2},
                 {"name": "Editar tarea", "value": 3},
                 {"name": "Eliminar tarea", "value": 4},
+                {"name": "Finalizar", "value": 0}
             ]
         ).execute()
         
@@ -42,6 +45,8 @@ def main():
         elif action == 4:
             delete()
         else:
+            console.print(f"[bold magenta] :waving_hand: ¡Hasta pronto! [/]")
+            time.sleep(2)
             break
 
 if __name__ == "__main__":

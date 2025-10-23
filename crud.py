@@ -1,28 +1,85 @@
 import json
 from datetime import date
 import time
-from InquirerPy import inquirer # pip install InquirerPy
+# Drawing prints - Needs 'console = Console()'
+from rich.console import Console # python -m pip install rich
+# Menu selectors
+from InquirerPy import inquirer # pip install inquirerpy
 
+console = Console()
+TASK_FILE = "task.json"
 
 #TODO: Añadir el resto de elementos a las listas
 
+def idTitleList():
+    with open(TASK_FILE, "r", encoding="utf-8") as archive:
+        data = json.load(archive)
+        
+        for task in data["tasks"]:
+            print(f"{task['id']} - {task['title']}")
+    
+def idTitleOption():
+    with open(TASK_FILE, "r", encoding="utf-8") as archive:
+        data = json.load(archive)
+        
+        choices_list = [{"name": "0 - Salir", "value": "0"}]
+        for task in data['tasks']:
+            print("Hola")
+            choices_list.append({
+                "name": f"{task['id']} - {task['title']}", 
+                "value": task['id']})
+                        
+        return(choices_list)
+
+def idMax():
+    with open(TASK_FILE, "r", encoding="utf-8") as archive:
+        data = json.load(archive)
+        
+        idList = []        
+        for task in data["tasks"]:
+            idList.append(task["id"])
+            
+        if not idList:
+            return 0
+        
+        return idList
+
 def create():
     #TODO: Meterlo todo en un diccionario o algo así para que sea más fácil
-    id = 0 #TODO: Debe tomar el ID máximo y sumarle 1
-    title = input("Título: ")
-    description = input("Descripción: ")
-    state = "⏳ Pendiente"
-    startDate = date.today()
-    finalDate = date.today() #TODO: Implementar menú para elección de fecha. Debe ser superior a la actual
+    values = {}
+    values["id"] = idMax() + 1
+    values["title"] = input("Título: ")
+    values["description"] = input("Descripción: ")
+    values["state"] = inquirer.select(
+        message = "Estado: ",
+        choices = ("⏳ Pendiente", "🔄 En progreso", "✅ Realizado")
+    ).execute()
+    values["startDate"] = date.today()
+    values["finalDate"] = date.today() #TODO: Implementar menú para elección de fecha. Debe ser superior a la actual
+    
+    print(values)
+    
+    #TODO: Debe actualizar el JSON
 
 def read():
-    #TODO: Listar todas las tareas en bonito
-    with open("proyects/taskList/task.json", "r", encoding="utf-8") as archive:
-        data = json.load(archive)
-
-    print(data)
-
-
+    choices_list = idTitleOption()
+    id_task = inquirer.select(
+        message = "¿Qué tarea quiere visualizar? :",
+        choices = choices_list
+    ).execute()
+    
+    print(type(id_task))
+    
+    if id_task != "0":
+        with open(TASK_FILE, "r", encoding="utf-8") as archive:
+            data = json.load(archive)
+            
+            # Recorre el apartado tasks del JSON en busca del id seleccionado
+            tarea = next((task for task in data["tasks"] if task["id"] == id_task), None)
+            if tarea:
+                console.print(f"[bold red]Título:[/bold red] {tarea['title']}\n[bold magenta]Description: [/bold magenta]{tarea['description']}\n[bold yellow]Estado: [/bold yellow]{tarea['state']}\n[bold blue]Fecha inicio: [/bold blue]{tarea['startDate']}\n[bold dark_blue]Fecha fin: [/bold dark_blue]{tarea['finalDate']}")
+                time.sleep(7)
+                 
 def update():
     choices_list = idTitleOption()
     id_task = inquirer.select(
@@ -30,7 +87,7 @@ def update():
         choices = choices_list
     ).execute()
     
-    with open("proyects/taskList/task.json", "r+", encoding="utf-8") as archive:
+    with open(TASK_FILE, "r+", encoding="utf-8") as archive:
         data = json.load(archive)
         if id_task != 0:
             tarea = next((task for task in data["tasks"] if task["id"] == id_task), None)
@@ -67,9 +124,9 @@ def update():
                     #TODO: Implementar modo de codificar fecha de forma cómoda para el usuario
                     print("Acción en desarrollo")
                 
-                archive.seek(0) #Puntero en línea 0
+                archive.seek(0) # Pointer in line 0
                 json.dump(data, archive, indent=4, ensure_ascii=False)
-                archive.truncate() #Eliminar fichero anterior
+                archive.truncate() # Deletes the last JSON
                 idTitleList()
             else:
                 print("Esa tarea no existe")
@@ -85,7 +142,7 @@ def delete():
         choices = choices_list
     ).execute()
     
-    with open("proyects/taskList/task.json", "r+", encoding="utf-8") as archive:
+    with open(TASK_FILE, "r+", encoding="utf-8") as archive:
         data = json.load(archive)
         if id_delete != 0:
             # Con next, buscamos la primera tarea que cumpla lo que estamos buscando, si no encuentra nada, 
@@ -108,22 +165,11 @@ def delete():
                     json.dump(data, archive, indent=4, ensure_ascii=False)
                     archive.truncate() #Eliminar fichero anterior
                     idTitleList()
-
-def idTitleList():
-    with open("proyects/taskList/task.json", "r", encoding="utf-8") as archive:
-        data = json.load(archive)
-        
-        for task in data["tasks"]:
-            print(f"{task['id']} - {task['title']}")
-    
-def idTitleOption():
-    with open("proyects/taskList/task.json", "r", encoding="utf-8") as archive:
-        data = json.load(archive)
-        
-        choices_list = [{"name": "0 - Salir", "value": "0"}]
-        for task in data["tasks"]:
-            choices_list.append({
-                "name": f"{task['id']} - {task['title']}", 
-                "value": task["id"]})
-            
-        return(choices_list)
+      
+# idTitleList()
+# idTitleOption()
+# idMax()
+# create()
+read()
+# update()
+# delete()
