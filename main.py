@@ -17,11 +17,8 @@
 # Adjuntos → rutas a archivos o URLs relacionadas.
 # Recordatorios → fecha/hora para avisar.
 
-import time
 from crud import create, read, update, delete
-from InquirerPy import inquirer
-from rich.console import Console # python -m pip install rich
-console = Console()
+from common import *
 
 def main():
     while True:

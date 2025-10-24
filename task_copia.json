@@ -1,28 +1,28 @@
 {
     "tasks": [
         {
-            "id": "1",
+            "id": 1,
             "title": "Ordenar monedas",
             "description": "Coger todas las monedas de la cartera y ordenarlas por tamaño",
-            "state": "🔄 En progreso",
+            "state": ":arrows_counterclockwise: En progreso",
             "startDate": "2025-08-15",
-            "finalDate": "2025-08-15"
+            "endDate": "2025-08-15"
         },
         {
-            "id": "2",
+            "id": 2,
             "title": "Recoger monedas del suelo",
             "description": "Hacerlo hasta volverse rico. Probar en fuentes bonitas",
-            "state": "⏳ Pendiente",
+            "state": ":hourglass_not_done: Pendiente",
             "startDate": "2025-08-15",
-            "finalDate": "2025-08-25"
+            "endDate": "2025-08-25"
         },
         {
-            "id": "3",
+            "id": 3,
             "title": "Pedir propina a la abuela",
             "description": "Ir a casa de la abuela y darle un beso",
-            "state": "✅ Realizado",
+            "state": ":white_check_mark: Realizado",
             "startDate": "2025-08-15",
-            "finalDate": "2025-08-31"
+            "endDate": "2025-08-31"
         }
     ]
 }
